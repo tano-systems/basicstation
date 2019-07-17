@@ -38,10 +38,10 @@
 #include "sys.h"
 #include "sx130xconf.h"
 #include "ral.h"
-#include "lgw/loragw_reg.h"
-#include "lgw/loragw_hal.h"
+#include "loragw_reg.h"
+#include "loragw_hal.h"
 #if defined(CFG_sx1302)
-#include "lgw/loragw_sx1302.h"
+#include "loragw_sx1302.h"
 #endif // defined(CFG_sx1302)
 
 #define RAL_MAX_RXBURST 10
