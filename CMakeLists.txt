@@ -85,6 +85,11 @@ if (NOT (${CMAKE_INSTALL_PREFIX} STREQUAL "/usr" ) )
    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 endif()
 
+# -- Options
+set(PLATFORM "linux" CACHE STRING "target platform")
+set_property(CACHE PLATFORM PROPERTY STRINGS linux rpi kerlink)
+message("-- Platform: " ${PLATFORM})
+
 add_executable(basicstation "")
 
 # --  add the compile options
@@ -115,7 +120,6 @@ target_sources(
 	PRIVATE
 		${CMAKE_CURRENT_LIST_DIR}/src/aio.c
 		${CMAKE_CURRENT_LIST_DIR}/src/argp.c
-		${CMAKE_CURRENT_LIST_DIR}/src/crc32.c
 		${CMAKE_CURRENT_LIST_DIR}/src/cups.c
 		${CMAKE_CURRENT_LIST_DIR}/src/flashsim.c
 		${CMAKE_CURRENT_LIST_DIR}/src/fs.c
@@ -180,5 +184,23 @@ install (
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
+add_executable(crc32 "")
+target_compile_options(
+	crc32
+	PRIVATE
+		-DCFG_prog_crc32
+)
 
+target_sources(
+	crc32
+	PRIVATE
+		${CMAKE_CURRENT_LIST_DIR}/src/crc32.c
+)
 
+# add the install targets
+install (
+	TARGETS crc32
+	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT shlib
+	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
