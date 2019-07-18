@@ -45,6 +45,24 @@ else(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
 	set(basicstation_VERSION 0)
 endif(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
 
+# -- Current date
+execute_process(
+	COMMAND date -u "+%Y-%m-%d %H:%M:%S"
+	WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+	OUTPUT_VARIABLE DATE
+	ERROR_QUIET
+	OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+# -- Current commit
+execute_process(
+	COMMAND git rev-parse --short HEAD
+	WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+	OUTPUT_VARIABLE COMMIT
+	ERROR_QUIET
+	OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
 # -- find packages
 find_package(loragw QUIET)
 if(NOT loragw_FOUND)
@@ -59,9 +77,6 @@ if(NOT loragw_FOUND)
 else()
 	message("-- CMake: libloragw is found")
 endif()
-
-#execute_process(COMMAND date -u '+%Y-%m-%d %H:%M:%S' OUTPUT_VARIABLE bdate)
-#message("-- build date: ${bdate}")
 
 # when building, don't use the install RPATH already
 # (but later on when installing)
@@ -78,8 +93,8 @@ target_compile_options(
 	PRIVATE
 	-Wall
 #	-Wextra
-	-DCFG_version="1"
-	-DCFG_bdate="2019"
+	-DCFG_version="${COMMIT}"
+	-DCFG_bdate="${DATE}"
 	-DCFG_platform="linux"
 	-DCFG_linux
 	-DCFG_no_leds
