@@ -69,10 +69,21 @@ if(NOT loragw_FOUND)
 	find_package(PkgConfig)
 	pkg_search_module(LORAGW loragw)
 
-	if(LORAGW_FOUND)
+	if(LORAGW_FOUND AND LORAGW_LINK_LIBRARIES)
 		message("-- pkg_config: libloragw is found")
 		message("-- libloragw include: ${LORAGW_INCLUDE_DIRS}")
 		message("-- libloragw library: ${LORAGW_LINK_LIBRARIES}")
+	else()
+		# a workaround for https://github.com/xueliu/lora-feed/issues/6
+		set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/")
+		find_package(loragw QUIET)
+		if(LORAGW_FOUND)
+			message("-- Findloragw: libloragw is found")
+			message("-- libloragw include: ${LORAGW_INCLUDE_DIRS}")
+			message("-- libloragw library: ${LORAGW_LINK_LIBRARIES}")
+		else()
+			message(FATAL_ERROR "-- CMake: libloragw is not found")
+		endif()
 	endif()
 else()
 	message("-- CMake: libloragw is found")
@@ -168,10 +179,30 @@ target_link_libraries(
 	PUBLIC
 		Threads::Threads
 		m
-	PRIVATE
-		Semtech::loragw
 		${MBEDTLS_LIBRARIES}
 )
+
+if(LORAGW_FOUND)
+target_include_directories(
+	basicstation
+	PRIVATE
+		${LORAGW_INCLUDE_DIRS}
+)
+
+target_link_libraries(
+	basicstation
+	PRIVATE
+		${LORAGW_LINK_LIBRARIES}
+)
+
+elseif(loragw_FOUND)
+
+target_link_libraries(
+	basicstation
+	PRIVATE
+		Semtech::loragw
+)
+endif()
 
 set_target_properties(basicstation PROPERTIES VERSION ${basicstation_VERSION})
 set_target_properties(basicstation PROPERTIES SOVERSION ${basicstation_VERSION_SHORT})
