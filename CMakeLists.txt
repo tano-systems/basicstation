@@ -109,8 +109,9 @@ target_compile_options(
 	PRIVATE
 	-Wall
 #	-Wextra
-	-DCFG_version="${COMMIT}"
+	-DCFG_version="${basicstation_VERSION}"
 	-DCFG_bdate="${DATE}"
+	-DCFG_commit="${COMMIT}"
 	-DCFG_platform="linux"
 	-DCFG_linux
 	-DCFG_no_leds
