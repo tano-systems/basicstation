@@ -96,10 +96,15 @@ if (NOT (${CMAKE_INSTALL_PREFIX} STREQUAL "/usr" ) )
    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 endif()
 
-# -- Options
+# -- Platform options
 set(PLATFORM "linux" CACHE STRING "target platform")
 set_property(CACHE PLATFORM PROPERTY STRINGS linux rpi kerlink)
 message("-- Platform: " ${PLATFORM})
+
+# -- Variant options
+set(VARIANT "std" CACHE STRING "build variant")
+set_property(CACHE VARIANT PROPERTY STRINGS testsim testms testfs testpin std stdn debug debugn)
+message("-- Variant: " ${VARIANT})
 
 add_executable(basicstation "")
 
@@ -112,14 +117,107 @@ target_compile_options(
 	-DCFG_version="${basicstation_VERSION}"
 	-DCFG_bdate="${DATE}"
 	-DCFG_commit="${COMMIT}"
-	-DCFG_platform="linux"
+	# following three definitions are the same for all platform
 	-DCFG_linux
 	-DCFG_no_leds
 	-DCFG_lgw1
-	-DCFG_logini_lvl=INFO
-	-DCFG_tlsdebug
-	-DCFG_ral_lgw
+
+	-DCFG_platform_${PLATFORM}
+	-DCFG_platform="${PLATFORM}"
+	-DCFG_variant_${VARIANT}
+	-DCFG_variant=\"${VARIANT}\"
 )
+
+# -- Platform options
+if(VARIANT STREQUAL "testsim")
+	target_compile_options(
+			basicstation PRIVATE
+			-DCFG_logini_lvl=DEBUG
+			-DCFG_selftests
+			-DCFG_tlsdebug
+			-DCFG_lgwsim
+			-DCFG_ral_lgw
+			-O0
+			--coverage
+	)
+endif()
+
+if(VARIANT STREQUAL "testms")
+	target_compile_options(
+			basicstation PRIVATE
+			-DCFG_logini_lvl=DEBUG
+			-DCFG_selftests
+			-DCFG_tlsdebug
+			-DCFG_lgwsim
+			-DCFG_ral_master_slave
+			-O0
+			--coverage
+	)
+endif()
+
+if(VARIANT STREQUAL "testfs")
+	target_compile_options(
+			basicstation PRIVATE
+			-DCFG_logini_lvl=DEBUG
+			-DCFG_selftests
+			-DCFG_tlsdebug
+			-DCFG_lgwsim
+			-DCFG_ral_lgw
+			-O0
+			--coverage
+	)
+endif()
+
+if(VARIANT STREQUAL "testpin")
+	target_compile_options(
+			basicstation PRIVATE
+			-DCFG_logini_lvl=INFO
+			-DCFG_selftests
+			-DCFG_tlsdebug
+			-DCFG_ral_lgw
+			-DCFG_testpin
+			-O3
+	)
+endif()
+
+if(VARIANT STREQUAL "std")
+	target_compile_options(
+			basicstation PRIVATE
+			-DCFG_logini_lvl=INFO
+			-DCFG_tlsdebug
+			-DCFG_ral_lgw
+			-O3
+	)
+endif()
+
+if(VARIANT STREQUAL "stdn")
+	target_compile_options(
+			basicstation PRIVATE
+			-DCFG_logini_lvl=INFO
+			-DCFG_tlsdebug
+			-DCFG_ral_master_slave
+	)
+endif()
+
+if(VARIANT STREQUAL "debug")
+	target_compile_options(
+			basicstation PRIVATE
+			-DCFG_logini_lvl=DEBUG
+			-DCFG_selftests
+			-DCFG_tlsdebug
+			-DCFG_ral_lgw
+	)
+endif()
+
+if(VARIANT STREQUAL "debugn")
+	target_compile_options(
+			basicstation PRIVATE
+			-DCFG_logini_lvl=DEBUG
+			-DCFG_selftests
+			-DCFG_tlsdebug
+			-DCFG_ral_master_slave
+	)
+endif()
 
 target_compile_definitions(
 	basicstation
@@ -144,6 +242,13 @@ target_sources(
 		${CMAKE_CURRENT_LIST_DIR}/src/rt.c
 		${CMAKE_CURRENT_LIST_DIR}/src/s2conf.c
 		${CMAKE_CURRENT_LIST_DIR}/src/s2e.c
+		${CMAKE_CURRENT_LIST_DIR}/src/selftest_fs.c
+		${CMAKE_CURRENT_LIST_DIR}/src/selftest_lora.c
+		${CMAKE_CURRENT_LIST_DIR}/src/selftest_rt.c
+		${CMAKE_CURRENT_LIST_DIR}/src/selftest_ujdec.c
+		${CMAKE_CURRENT_LIST_DIR}/src/selftest_ujenc.c
+		${CMAKE_CURRENT_LIST_DIR}/src/selftest_xprintf.c
+		${CMAKE_CURRENT_LIST_DIR}/src/selftest_xq.c
 		${CMAKE_CURRENT_LIST_DIR}/src/selftests.c
 		${CMAKE_CURRENT_LIST_DIR}/src/sx1301conf.c
 		${CMAKE_CURRENT_LIST_DIR}/src/sx1301v2conf.c
@@ -182,6 +287,30 @@ target_link_libraries(
 		m
 		${MBEDTLS_LIBRARIES}
 )
+
+if(VARIANT STREQUAL "testsim")
+	target_link_libraries(
+			basicstation
+			PUBLIC
+			gcov
+	)
+endif()
+
+if(VARIANT STREQUAL "testms")
+	target_link_libraries(
+			basicstation
+			PUBLIC
+			gcov
+	)
+endif()
+
+if(VARIANT STREQUAL "testfs")
+	target_link_libraries(
+			basicstation
+			PUBLIC
+			gcov
+	)
+endif()
 
 if(LORAGW_FOUND)
 target_include_directories(

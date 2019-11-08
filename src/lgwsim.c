@@ -37,15 +37,15 @@
 #include <sys/un.h>
 
 #if defined(CFG_lgw1)
-#include "lgw/loragw_reg.h"
-#include "lgw/loragw_hal.h"
-#include "lgw/loragw_fpga.h"
-#include "lgw/loragw_lbt.h"
+#include "loragw_reg.h"
+#include "loragw_hal.h"
+#include "loragw_fpga.h"
+#include "loragw_lbt.h"
 #elif defined(CFG_lgw2)
-#include "lgw2/sx1301ar_hal.h"
-#include "lgw2/sx1301ar_err.h"
-#include "lgw2/sx1301ar_gps.h"
-#include "lgw2/sx1301ar_dsp.h"
+#include "sx1301ar_hal.h"
+#include "sx1301ar_err.h"
+#include "sx1301ar_gps.h"
+#include "sx1301ar_dsp.h"
 #endif
 
 #include "rt.h"

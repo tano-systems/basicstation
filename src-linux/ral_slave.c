@@ -39,7 +39,7 @@
 #include "timesync.h"
 #include "sys_linux.h"
 #include "sx130xconf.h"
-#include "lgw/loragw_hal.h"
+#include "loragw_hal.h"
 
 
 static u1_t   pps_en;
