@@ -106,32 +106,35 @@ set(VARIANT "std" CACHE STRING "build variant")
 set_property(CACHE VARIANT PROPERTY STRINGS testsim testms testfs testpin std stdn debug debugn)
 message("-- Variant: " ${VARIANT})
 
-add_executable(basicstation "")
+set(LIB s2core)
+set(APP station)
+
+add_library(${LIB} "")
 
 # --  add the compile options
 target_compile_options(
-	basicstation
-	PRIVATE
-	-Wall
-#	-Wextra
-	-DCFG_version="${basicstation_VERSION}"
-	-DCFG_bdate="${DATE}"
-	-DCFG_commit="${COMMIT}"
-	# following three definitions are the same for all platform
-	-DCFG_linux
-	-DCFG_no_leds
-	-DCFG_lgw1
+		${LIB}
+		PUBLIC
+		-Wall
+	#	-Wextra
+		-DCFG_version="${basicstation_VERSION}"
+		-DCFG_bdate="${DATE}"
+		-DCFG_commit="${COMMIT}"
+		# following three definitions are the same for all platform
+		-DCFG_linux
+		-DCFG_no_leds
+		-DCFG_lgw1
 
-	-DCFG_platform_${PLATFORM}
-	-DCFG_platform="${PLATFORM}"
-	-DCFG_variant_${VARIANT}
-	-DCFG_variant=\"${VARIANT}\"
+		-DCFG_platform_${PLATFORM}
+		-DCFG_platform="${PLATFORM}"
+		-DCFG_variant_${VARIANT}
+		-DCFG_variant=\"${VARIANT}\"
 )
 
 # -- Platform options
 if(VARIANT STREQUAL "testsim")
 	target_compile_options(
-			basicstation PRIVATE
+			${LIB} PUBLIC
 			-DCFG_logini_lvl=DEBUG
 			-DCFG_selftests
 			-DCFG_tlsdebug
@@ -144,7 +147,7 @@ endif()
 
 if(VARIANT STREQUAL "testms")
 	target_compile_options(
-			basicstation PRIVATE
+			${LIB} PUBLIC
 			-DCFG_logini_lvl=DEBUG
 			-DCFG_selftests
 			-DCFG_tlsdebug
@@ -157,7 +160,7 @@ endif()
 
 if(VARIANT STREQUAL "testfs")
 	target_compile_options(
-			basicstation PRIVATE
+			${LIB} PUBLIC
 			-DCFG_logini_lvl=DEBUG
 			-DCFG_selftests
 			-DCFG_tlsdebug
@@ -170,7 +173,7 @@ endif()
 
 if(VARIANT STREQUAL "testpin")
 	target_compile_options(
-			basicstation PRIVATE
+			${LIB} PUBLIC
 			-DCFG_logini_lvl=INFO
 			-DCFG_selftests
 			-DCFG_tlsdebug
@@ -182,7 +185,7 @@ endif()
 
 if(VARIANT STREQUAL "std")
 	target_compile_options(
-			basicstation PRIVATE
+			${LIB} PUBLIC
 			-DCFG_logini_lvl=INFO
 			-DCFG_tlsdebug
 			-DCFG_ral_lgw
@@ -192,7 +195,7 @@ endif()
 
 if(VARIANT STREQUAL "stdn")
 	target_compile_options(
-			basicstation PRIVATE
+			${LIB} PUBLIC
 			-DCFG_logini_lvl=INFO
 			-DCFG_tlsdebug
 			-DCFG_ral_master_slave
@@ -201,7 +204,7 @@ endif()
 
 if(VARIANT STREQUAL "debug")
 	target_compile_options(
-			basicstation PRIVATE
+			${LIB} PUBLIC
 			-DCFG_logini_lvl=DEBUG
 			-DCFG_selftests
 			-DCFG_tlsdebug
@@ -211,7 +214,7 @@ endif()
 
 if(VARIANT STREQUAL "debugn")
 	target_compile_options(
-			basicstation PRIVATE
+			${LIB} PUBLIC
 			-DCFG_logini_lvl=DEBUG
 			-DCFG_selftests
 			-DCFG_tlsdebug
@@ -220,14 +223,14 @@ if(VARIANT STREQUAL "debugn")
 endif()
 
 target_compile_definitions(
-	basicstation
-	PRIVATE
-	VERSION_STRING="${basicstation_VERSION_SHORT}"
+		${LIB}
+		PRIVATE
+		VERSION_STRING="${basicstation_VERSION_SHORT}"
 )
 
 target_sources(
-	basicstation
-	PRIVATE
+		${LIB}
+		PRIVATE
 		${CMAKE_CURRENT_LIST_DIR}/src/aio.c
 		${CMAKE_CURRENT_LIST_DIR}/src/argp.c
 		${CMAKE_CURRENT_LIST_DIR}/src/cups.c
@@ -266,23 +269,22 @@ target_sources(
 		${CMAKE_CURRENT_LIST_DIR}/src-linux/ral_master.c
 		${CMAKE_CURRENT_LIST_DIR}/src-linux/ral_slave.c
 		${CMAKE_CURRENT_LIST_DIR}/src-linux/rmtsh.c
-		${CMAKE_CURRENT_LIST_DIR}/src-linux/station_main.c
 		${CMAKE_CURRENT_LIST_DIR}/src-linux/sys_linux.c
 		${CMAKE_CURRENT_LIST_DIR}/src-linux/sys_log.c
 		${CMAKE_CURRENT_LIST_DIR}/src-linux/web_linux.c
 )
 
 target_include_directories(
-	basicstation
-	PRIVATE
+		${LIB}
+		PRIVATE
 		${CMAKE_CURRENT_LIST_DIR}/src
 		${CMAKE_CURRENT_LIST_DIR}/src-linux
 		${MBEDTLS_INCLUDE_DIR}
 )
 
 target_link_libraries(
-	basicstation
-	PUBLIC
+		${LIB}
+		PUBLIC
 		Threads::Threads
 		m
 		${MBEDTLS_LIBRARIES}
@@ -290,7 +292,7 @@ target_link_libraries(
 
 if(VARIANT STREQUAL "testsim")
 	target_link_libraries(
-			basicstation
+			${LIB}
 			PUBLIC
 			gcov
 	)
@@ -298,7 +300,7 @@ endif()
 
 if(VARIANT STREQUAL "testms")
 	target_link_libraries(
-			basicstation
+			${LIB}
 			PUBLIC
 			gcov
 	)
@@ -306,43 +308,57 @@ endif()
 
 if(VARIANT STREQUAL "testfs")
 	target_link_libraries(
-			basicstation
+			${LIB}
 			PUBLIC
 			gcov
 	)
 endif()
 
 if(LORAGW_FOUND)
-target_include_directories(
-	basicstation
-	PRIVATE
-		${LORAGW_INCLUDE_DIRS}
+	target_include_directories(
+			${LIB}
+			PRIVATE
+			${LORAGW_INCLUDE_DIRS}
 )
 
 target_link_libraries(
-	basicstation
-	PRIVATE
+		${LIB}
+		PRIVATE
 		${LORAGW_LINK_LIBRARIES}
 )
 
 elseif(loragw_FOUND)
 
 target_link_libraries(
-	basicstation
-	PRIVATE
+		${LIB}
+		PRIVATE
 		Semtech::loragw
 )
 endif()
 
-set_target_properties(basicstation PROPERTIES VERSION ${basicstation_VERSION})
-set_target_properties(basicstation PROPERTIES SOVERSION ${basicstation_VERSION_SHORT})
+add_executable(${APP} "")
+
+set_target_properties(${APP} PROPERTIES VERSION ${basicstation_VERSION})
+set_target_properties(${APP} PROPERTIES SOVERSION ${basicstation_VERSION_SHORT})
+
+target_sources(
+		${APP}
+		PRIVATE
+		${CMAKE_CURRENT_LIST_DIR}/src-linux/station_main.c
+)
+
+target_link_libraries(
+		${APP}
+		PRIVATE
+		s2core
+)
 
 # add the install targets
 install (
-	TARGETS basicstation
-	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT shlib
-	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+		TARGETS ${APP}
+		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT shlib
+		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 add_executable(crc32 "")
@@ -364,4 +380,25 @@ install (
 	LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT shlib
 	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
 	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+add_executable(genkwcrcs "")
+target_compile_options(
+		genkwcrcs
+		PRIVATE
+		-DCFG_prog_genkwcrcs
+)
+
+target_sources(
+		genkwcrcs
+		PRIVATE
+		${CMAKE_CURRENT_LIST_DIR}/src/genkwcrcs.c
+)
+
+# add the install targets
+install (
+		TARGETS genkwcrcs
+		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR} COMPONENT shlib
+		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+		RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
