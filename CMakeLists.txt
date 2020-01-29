@@ -16,7 +16,7 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
-find_package(mbedTLS REQUIRED)
+#find_package(mbedTLS REQUIRED)
 
 # -- Versioning with git tag
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
@@ -105,6 +105,8 @@ message("-- Platform: " ${PLATFORM})
 set(VARIANT "std" CACHE STRING "build variant")
 set_property(CACHE VARIANT PROPERTY STRINGS testsim testms testfs testpin std stdn debug debugn)
 message("-- Variant: " ${VARIANT})
+
+add_subdirectory(deps/mbedtls)
 
 set(LIB s2core)
 set(APP station)
@@ -274,6 +276,9 @@ target_sources(
 		${CMAKE_CURRENT_LIST_DIR}/src-linux/web_linux.c
 )
 
+message(STATUS  ${MBEDTLS_INCLUDE_DIR})
+message(STATUS  ${MBEDTLS_LIBRARIES})
+
 target_include_directories(
 		${LIB}
 		PRIVATE
@@ -287,7 +292,10 @@ target_link_libraries(
 		PUBLIC
 		Threads::Threads
 		m
-		${MBEDTLS_LIBRARIES}
+		mbedtls
+		mbedx509
+		mbedcrypto
+#		${MBEDTLS_LIBRARIES}
 )
 
 if(VARIANT STREQUAL "testsim")
