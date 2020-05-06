@@ -16,11 +16,8 @@ if(result)
   message(FATAL_ERROR "Build step for mbedtls failed: ${result}")
 endif()
 
-# Prevent overriding the parent project's compiler/linker
-# settings on Windows
-#set(mbedtls_force_shared_crt ON CACHE BOOL "" FORCE)
-# Prevent installation of mbedtls with your project
-#set(INSTALL_MBEDTLS OFF CACHE BOOL "" FORCE)
+set(ENABLE_TESTING OFF CACHE BOOL "" FORCE)
+set(ENABLE_PROGRAMS OFF CACHE BOOL "" FORCE)
 
 # Add mbedtls directly to our build.
 add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/mbedtls-src
