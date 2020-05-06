@@ -26,45 +26,6 @@ endif()
 add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/mbedtls-src
                  ${CMAKE_CURRENT_BINARY_DIR}/mbedtls-build)
 
-# This is a bit of a hack that can be used to get gtest libraries to build in C++11 if you aren't using CMAKE_CXX_STANDARD
-#
-#set(CXX11_FEATURES
-#    cxx_nullptr
-#    cxx_auto_type
-#    cxx_delegating_constructors
-#)
-#target_compile_features(gtest
-#    PRIVATE
-#        ${CXX11_FEATURES}
-#)
-#
-#target_compile_features(gmock_main
-#    PRIVATE
-#        ${CXX11_FEATURES}
-#)
-#
-#target_compile_features(gmock
-#    PRIVATE
-#        ${CXX11_FEATURES}
-#)
-#
-#target_compile_features(gmock_main
-#    PRIVATE
-#        ${CXX11_FEATURES}
-#)
-
-# Add aliases for mbedtls libraries
-#if(NOT TARGET mbedtls)
-#    add_library(mbedtls ALIAS mbedtls)
-#    add_library(mbedcrypto ALIAS mbedcrypto)
-#endif()
-
-#if(NOT TARGET GTest::GMock)
-#    add_library(GMock::GMock ALIAS gmock)
- #   add_library(GMock::Main ALIAS gmock_main)
-#endif()
-
-
 set(MBEDTLS_INCLUDE_DIR "${CMAKE_CURRENT_BINARY_DIR}/mbedtls-src/include" CACHE INTERNAL "MBEDTLS_INCLUDE_DIR")
 include_directories(${MBEDTLS_INCLUDE_DIR})
 link_directories(${MBEDTLS_LIBRARIES})

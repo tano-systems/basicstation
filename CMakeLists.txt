@@ -9,14 +9,13 @@ include (CMakePackageConfigHelpers)
 include (GNUInstallDirs)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/")
 
-# -- set c99 standard default
+# -- Set c99 standard default
 set(CMAKE_C_STANDARD 11)
 
 # -- Required to build
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
-#find_package(mbedTLS REQUIRED)
 
 # -- Versioning with git tag
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
@@ -63,32 +62,6 @@ execute_process(
 	OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
-# -- find packages
-find_package(loragw QUIET)
-if(NOT loragw_FOUND)
-	find_package(PkgConfig)
-	pkg_search_module(LORAGW loragw)
-
-	if(LORAGW_FOUND AND LORAGW_LINK_LIBRARIES)
-		message("-- pkg_config: libloragw is found")
-		message("-- libloragw include: ${LORAGW_INCLUDE_DIRS}")
-		message("-- libloragw library: ${LORAGW_LINK_LIBRARIES}")
-	else()
-		# a workaround for https://github.com/xueliu/lora-feed/issues/6
-		set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules/")
-		find_package(loragw QUIET)
-		if(LORAGW_FOUND)
-			message("-- Findloragw: libloragw is found")
-			message("-- libloragw include: ${LORAGW_INCLUDE_DIRS}")
-			message("-- libloragw library: ${LORAGW_LINK_LIBRARIES}")
-		else()
-			message(FATAL_ERROR "-- CMake: libloragw is not found")
-		endif()
-	endif()
-else()
-	message("-- CMake: libloragw is found")
-endif()
-
 # when building, don't use the install RPATH already
 # (but later on when installing)
 SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
@@ -107,13 +80,14 @@ set_property(CACHE VARIANT PROPERTY STRINGS testsim testms testfs testpin std st
 message("-- Variant: " ${VARIANT})
 
 add_subdirectory(deps/mbedtls)
+add_subdirectory(deps/lgw)
 
 set(LIB s2core)
 set(APP station)
 
 add_library(${LIB} "")
 
-# --  add the compile options
+# --  Add the compile options
 target_compile_options(
 		${LIB}
 		PUBLIC
@@ -322,27 +296,11 @@ if(VARIANT STREQUAL "testfs")
 	)
 endif()
 
-if(LORAGW_FOUND)
-	target_include_directories(
-			${LIB}
-			PRIVATE
-			${LORAGW_INCLUDE_DIRS}
-)
-
-target_link_libraries(
-		${LIB}
-		PRIVATE
-		${LORAGW_LINK_LIBRARIES}
-)
-
-elseif(loragw_FOUND)
-
 target_link_libraries(
 		${LIB}
 		PRIVATE
 		Semtech::loragw
 )
-endif()
 
 add_executable(${APP} "")
 
