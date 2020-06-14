@@ -229,7 +229,7 @@ target_sources(
 		${CMAKE_CURRENT_LIST_DIR}/src/selftest_xprintf.c
 		${CMAKE_CURRENT_LIST_DIR}/src/selftest_xq.c
 		${CMAKE_CURRENT_LIST_DIR}/src/selftests.c
-		${CMAKE_CURRENT_LIST_DIR}/src/sx1301conf.c
+		${CMAKE_CURRENT_LIST_DIR}/src/sx130xconf.c
 		${CMAKE_CURRENT_LIST_DIR}/src/sx1301v2conf.c
 		${CMAKE_CURRENT_LIST_DIR}/src/sys.c
 		${CMAKE_CURRENT_LIST_DIR}/src/tc.c

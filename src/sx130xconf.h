@@ -31,10 +31,10 @@
 #if defined(CFG_lgw1)
 
 #include <stdio.h> // loragw_fpga.h refers to FILE
-#include "lgw/loragw_hal.h"
+#include "loragw_hal.h"
 #if !defined(CFG_sx1302)
-#include "lgw/loragw_lbt.h"
-#include "lgw/loragw_fpga.h"
+#include "loragw_lbt.h"
+#include "loragw_fpga.h"
 #endif
 #include "s2conf.h"
 #include "ral.h" //chdefl_t

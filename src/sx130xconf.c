@@ -35,9 +35,9 @@
 #include "sys_linux.h"
 #endif // defined(CFG_linux)
 #include "sx130xconf.h"
-#include "lgw/loragw_reg.h"
+#include "loragw_reg.h"
 #if defined(CFG_sx1302)
-#include "lgw/loragw_sx1302.h"
+#include "loragw_sx1302.h"
 #endif // defined(CFG_sx1302)
 
 #define SX130X_RFE_MAX 400000  // Max if offset 400kHz
