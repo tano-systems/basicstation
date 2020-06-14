@@ -216,6 +216,7 @@ target_sources(
 		${CMAKE_CURRENT_LIST_DIR}/src/log.c
 		${CMAKE_CURRENT_LIST_DIR}/src/lora.c
 		${CMAKE_CURRENT_LIST_DIR}/src/net.c
+		${CMAKE_CURRENT_LIST_DIR}/src/ral.c
 		${CMAKE_CURRENT_LIST_DIR}/src/ral_lgw.c
 		${CMAKE_CURRENT_LIST_DIR}/src/ral_lgw2.c
 		${CMAKE_CURRENT_LIST_DIR}/src/rt.c
