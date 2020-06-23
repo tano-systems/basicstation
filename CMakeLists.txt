@@ -107,6 +107,7 @@ target_compile_options(
 		-DCFG_linux
 		-DCFG_no_leds
 		-DCFG_lgw1
+		-DCFG_argp
 
 		-DCFG_platform_${PLATFORM}
 		-DCFG_platform="${PLATFORM}"

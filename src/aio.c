@@ -32,6 +32,7 @@
 #include <fcntl.h>
 #include "rt.h"
 
+#include <sys/select.h>
 
 enum { N_AIO_HANDLES = 10 };
 static aio_t aioHandles[N_AIO_HANDLES];
