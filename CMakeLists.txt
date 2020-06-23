@@ -81,6 +81,8 @@ message("-- Variant: " ${VARIANT})
 
 if(PLATFORM STREQUAL "corecell")
 	add_subdirectory(deps/lgw1302)
+elseif(PLATFORM STREQUAL "linuxpico")
+	add_subdirectory(deps/smtcpico)
 else()
 	add_subdirectory(deps/lgw)
 endif()
@@ -321,6 +323,12 @@ if(PLATFORM STREQUAL "corecell")
 		${LIB}
 		PRIVATE
 		Semtech::1302gw
+	)
+elseif(PLATFORM STREQUAL "linuxpico")
+	target_link_libraries(
+		${LIB}
+		PRIVATE
+		Semtech::picogw
 	)
 else()
 	target_link_libraries(
