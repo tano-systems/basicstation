@@ -70,8 +70,8 @@ if (NOT (${CMAKE_INSTALL_PREFIX} STREQUAL "/usr" ) )
 endif()
 
 # -- Platform options
-set(PLATFORM "linuxV2" CACHE STRING "target platform")
-set_property(CACHE PLATFORM PROPERTY STRINGS linux rpi kerlink linuxV2 linuxpico corecell)
+set(PLATFORM "linux" CACHE STRING "target platform")
+set_property(CACHE PLATFORM PROPERTY STRINGS linux rpi kerlink linuxpico corecell)
 message("-- Platform: " ${PLATFORM})
 
 # -- Variant options
@@ -79,7 +79,7 @@ set(VARIANT "std" CACHE STRING "build variant")
 set_property(CACHE VARIANT PROPERTY STRINGS testsim testms testfs testpin std stdn debug debugn)
 message("-- Variant: " ${VARIANT})
 
-if(PLATFORM STREQUAL "linuxV2")
+if(PLATFORM STREQUAL "corecell")
 	add_subdirectory(deps/lgw1302)
 else()
 	add_subdirectory(deps/lgw)
@@ -113,6 +113,21 @@ target_compile_options(
 )
 
 # -- Platform options
+if(PLATFORM STREQUAL "corecell")
+	target_compile_options(
+		${LIB} PUBLIC
+		-DCFG_sx1302
+	)
+endif()
+
+if(PLATFORM STREQUAL "linuxpico")
+	target_compile_options(
+		${LIB} PUBLIC
+		-DCFG_smtcpico
+	)
+endif()
+
+# -- Variant options
 if(VARIANT STREQUAL "testsim")
 	target_compile_options(
 			${LIB} PUBLIC
@@ -275,7 +290,6 @@ target_link_libraries(
 		mbedtls
 		mbedx509
 		mbedcrypto
-#		${MBEDTLS_LIBRARIES}
 )
 
 if(VARIANT STREQUAL "testsim")
@@ -302,9 +316,7 @@ if(VARIANT STREQUAL "testfs")
 	)
 endif()
 
-
-
-if(PLATFORM STREQUAL "linuxV2")
+if(PLATFORM STREQUAL "corecell")
 	target_link_libraries(
 		${LIB}
 		PRIVATE
