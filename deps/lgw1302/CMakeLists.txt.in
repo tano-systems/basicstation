@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.0)
+
+project(sx1302_hal-download NONE)
+
+include(ExternalProject)
+
+ExternalProject_Add(
+  lora_gateway
+  GIT_REPOSITORY  "https://github.com/xueliu/sx1302_hal.git"
+  GIT_TAG         "feature/basicstation"
+  UPDATE_COMMAND  ""
+  PATCH_COMMAND   ""
+  SOURCE_DIR      "${CMAKE_CURRENT_BINARY_DIR}/sx1302_hal-src"
+  BINARY_DIR      "${CMAKE_CURRENT_BINARY_DIR}/sx1302_hal-build"
+  INSTALL_COMMAND   ""
+  TEST_COMMAND ""
+)

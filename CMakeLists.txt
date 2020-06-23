@@ -70,8 +70,8 @@ if (NOT (${CMAKE_INSTALL_PREFIX} STREQUAL "/usr" ) )
 endif()
 
 # -- Platform options
-set(PLATFORM "linux" CACHE STRING "target platform")
-set_property(CACHE PLATFORM PROPERTY STRINGS linux rpi kerlink)
+set(PLATFORM "linuxV2" CACHE STRING "target platform")
+set_property(CACHE PLATFORM PROPERTY STRINGS linux rpi kerlink linuxV2 linuxpico corecell)
 message("-- Platform: " ${PLATFORM})
 
 # -- Variant options
@@ -79,8 +79,13 @@ set(VARIANT "std" CACHE STRING "build variant")
 set_property(CACHE VARIANT PROPERTY STRINGS testsim testms testfs testpin std stdn debug debugn)
 message("-- Variant: " ${VARIANT})
 
+if(PLATFORM STREQUAL "linuxV2")
+	add_subdirectory(deps/lgw1302)
+else()
+	add_subdirectory(deps/lgw)
+endif()
+
 add_subdirectory(deps/mbedtls)
-add_subdirectory(deps/lgw)
 
 set(LIB s2core)
 set(APP station)
@@ -297,11 +302,21 @@ if(VARIANT STREQUAL "testfs")
 	)
 endif()
 
-target_link_libraries(
+
+
+if(PLATFORM STREQUAL "linuxV2")
+	target_link_libraries(
+		${LIB}
+		PRIVATE
+		Semtech::1302gw
+	)
+else()
+	target_link_libraries(
 		${LIB}
 		PRIVATE
 		Semtech::loragw
-)
+	)
+endif()
 
 add_executable(${APP} "")
 
