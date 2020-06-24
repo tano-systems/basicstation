@@ -103,10 +103,11 @@ target_compile_options(
 		-DCFG_version="${basicstation_VERSION}"
 		-DCFG_bdate="${DATE}"
 		-DCFG_commit="${COMMIT}"
-		# following three definitions are the same for all platform
+		# following four definitions are the same for all platform
 		-DCFG_linux
 		-DCFG_no_leds
 		-DCFG_lgw1
+		-DCFG_tlsdebug
 
 		-DCFG_platform_${PLATFORM}
 		-DCFG_platform="${PLATFORM}"
@@ -135,7 +136,6 @@ if(VARIANT STREQUAL "testsim")
 			${LIB} PUBLIC
 			-DCFG_logini_lvl=DEBUG
 			-DCFG_selftests
-			-DCFG_tlsdebug
 			-DCFG_lgwsim
 			-DCFG_ral_lgw
 			-O0
@@ -148,7 +148,6 @@ if(VARIANT STREQUAL "testms")
 			${LIB} PUBLIC
 			-DCFG_logini_lvl=DEBUG
 			-DCFG_selftests
-			-DCFG_tlsdebug
 			-DCFG_lgwsim
 			-DCFG_ral_master_slave
 			-O0
@@ -161,7 +160,6 @@ if(VARIANT STREQUAL "testfs")
 			${LIB} PUBLIC
 			-DCFG_logini_lvl=DEBUG
 			-DCFG_selftests
-			-DCFG_tlsdebug
 			-DCFG_lgwsim
 			-DCFG_ral_lgw
 			-O0
@@ -174,7 +172,6 @@ if(VARIANT STREQUAL "testpin")
 			${LIB} PUBLIC
 			-DCFG_logini_lvl=INFO
 			-DCFG_selftests
-			-DCFG_tlsdebug
 			-DCFG_ral_lgw
 			-DCFG_testpin
 			-O3
@@ -185,7 +182,6 @@ if(VARIANT STREQUAL "std")
 	target_compile_options(
 			${LIB} PUBLIC
 			-DCFG_logini_lvl=INFO
-			-DCFG_tlsdebug
 			-DCFG_ral_lgw
 			-O3
 	)
@@ -195,7 +191,6 @@ if(VARIANT STREQUAL "stdn")
 	target_compile_options(
 			${LIB} PUBLIC
 			-DCFG_logini_lvl=INFO
-			-DCFG_tlsdebug
 			-DCFG_ral_master_slave
 	)
 endif()
@@ -205,7 +200,6 @@ if(VARIANT STREQUAL "debug")
 			${LIB} PUBLIC
 			-DCFG_logini_lvl=DEBUG
 			-DCFG_selftests
-			-DCFG_tlsdebug
 			-DCFG_ral_lgw
 	)
 endif()
@@ -215,7 +209,6 @@ if(VARIANT STREQUAL "debugn")
 			${LIB} PUBLIC
 			-DCFG_logini_lvl=DEBUG
 			-DCFG_selftests
-			-DCFG_tlsdebug
 			-DCFG_ral_master_slave
 	)
 endif()
