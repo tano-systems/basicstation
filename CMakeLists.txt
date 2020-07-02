@@ -17,6 +17,9 @@ set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 find_package(Threads REQUIRED)
 
+# -- Dependence
+find_package(ubus REQUIRED)
+
 # -- Versioning with git tag
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
 	execute_process(
@@ -271,6 +274,7 @@ target_sources(
 		${CMAKE_CURRENT_LIST_DIR}/src-linux/rmtsh.c
 		${CMAKE_CURRENT_LIST_DIR}/src-linux/sys_linux.c
 		${CMAKE_CURRENT_LIST_DIR}/src-linux/sys_log.c
+		${CMAKE_CURRENT_LIST_DIR}/src-linux/ubus.c
 		${CMAKE_CURRENT_LIST_DIR}/src-linux/web_linux.c
 )
 
@@ -283,6 +287,7 @@ target_include_directories(
 		${CMAKE_CURRENT_LIST_DIR}/src
 		${CMAKE_CURRENT_LIST_DIR}/src-linux
 		${MBEDTLS_INCLUDE_DIR}
+		${UBUS_INCLUDE_DIRS}
 )
 
 target_link_libraries(
@@ -293,6 +298,7 @@ target_link_libraries(
 		mbedtls
 		mbedx509
 		mbedcrypto
+		${UBUS_LIBRARIES}
 )
 
 if(VARIANT STREQUAL "testsim")

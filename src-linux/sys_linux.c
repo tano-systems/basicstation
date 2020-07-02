@@ -51,6 +51,11 @@
 #include "fs.h"
 #include "selftests.h"
 
+#include <libubus.h>
+#include <libubox/uloop.h>
+
+#include "ubus.h"
+
 extern char* makeFilepath (const char* prefix, const char* suffix, char** pCachedFile, int isReadable); // sys.c
 extern int writeFile (str_t file, const char* data, int datalen);
 extern dbuf_t readFile (str_t file, int complain);
@@ -1270,7 +1275,9 @@ int sys_main (int argc, char** argv) {
 #endif // defined(CFG_ral_master_slave)
 
     rt_yieldTo(&startupTmr, daemon ? startupDaemon : startupMaster);
+	station_ubus_add();
     aio_loop();
+	station_ubus_free();
     // NOT REACHED
     assert(0);
 }
